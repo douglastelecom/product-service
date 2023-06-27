@@ -1,11 +1,4 @@
 ### Adiciona produto
 
-POST http://localhost:8080/api/product
-Content-Type: application/json
+GET http://localhost:8080/products
 
-{
-    "name": "Tênis",
-    "description": "Tênis para correr e se exercitar",
-    "brand": "adidas",
-    "size": "50x30"
-}

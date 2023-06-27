@@ -1,4 +1,4 @@
-package exception;
+package com.example.productservice.exception;
 
 public class BusinessLogicException extends RuntimeException{
 

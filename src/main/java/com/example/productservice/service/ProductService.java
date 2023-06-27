@@ -1,11 +1,11 @@
-package service;
+package com.example.productservice.service;
 
-import dto.ProductDTO;
-import exception.BusinessLogicException;
+import com.example.productservice.dto.ProductDTO;
+import com.example.productservice.exception.BusinessLogicException;
 import lombok.RequiredArgsConstructor;
-import model.Product;
+import com.example.productservice.model.Product;
 import org.springframework.stereotype.Service;
-import repository.ProductRepository;
+import com.example.productservice.repository.ProductRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +38,9 @@ public class ProductService {
         if (product.getName() != null) {
             productDTO.setName(product.getName());
         }
+        if(product.getId()!= null){
+            productDTO.setId(product.getId());
+        }
         if (product.getDescription() != null) {
             productDTO.setDescription(product.getDescription());
         }
@@ -60,12 +63,12 @@ public class ProductService {
             product.setId(productDTO.getId());
         }
         if (productDTO.getName() != null) {
-            product.setName(product.getName());
+            product.setName(productDTO.getName());
         } else {
             throw new BusinessLogicException("Nome do produto não informado.");
         }
         if (productDTO.getDescription() != null) {
-            product.setDescription(product.getDescription());
+            product.setDescription(productDTO.getDescription());
         } else {
             throw new BusinessLogicException("Descrição do produto não informada.");
         }
@@ -75,12 +78,12 @@ public class ProductService {
 //            throw new BusinessLogicException("Preço do produto não informado.");
 //        }
         if (productDTO.getBrand() != null) {
-            product.setBrand(product.getBrand());
+            product.setBrand(productDTO.getBrand());
         } else {
             throw new BusinessLogicException("Marca do produto não informada.");
         }
         if (productDTO.getSize() != null) {
-            product.setSize(product.getSize());
+            product.setSize(productDTO.getSize());
         } else {
             throw new BusinessLogicException("Tamanho do produto não informado.");
         }
