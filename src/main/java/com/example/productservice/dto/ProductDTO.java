@@ -3,6 +3,7 @@ package com.example.productservice.dto;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 @Getter
@@ -11,7 +12,9 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class ProductDTO {
     private String id;
-    private String name;
+    private List<String> category;
+    private String model;
+    private BigDecimal price;
     private String description;
     private String brand;
     private String size;

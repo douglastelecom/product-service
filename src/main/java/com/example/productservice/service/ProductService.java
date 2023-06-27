@@ -20,14 +20,15 @@ public class ProductService {
         Product product = this.createProduct(productDTO);
         return createProductDTO(productRepository.save(product));
     }
-    public ProductDTO getProductByID(String id){
+
+    public ProductDTO getProductByID(String id) {
         Product product = productRepository.findById(id).get();
         return createProductDTO(product);
     }
 
-    public List<ProductDTO> getAllProducts(){
+    public List<ProductDTO> getAllProducts() {
         List<ProductDTO> productDTOList = new ArrayList<>();
-        for(Product product:productRepository.findAll()){
+        for (Product product : productRepository.findAll()) {
             productDTOList.add(createProductDTO(product));
         }
         return productDTOList;
@@ -35,18 +36,21 @@ public class ProductService {
 
     public ProductDTO createProductDTO(Product product) {
         ProductDTO productDTO = new ProductDTO();
-        if (product.getName() != null) {
-            productDTO.setName(product.getName());
+        if (product.getCategory() != null) {
+            productDTO.setCategory(product.getCategory());
         }
-        if(product.getId()!= null){
+        if (product.getModel() != null) {
+            productDTO.setModel(product.getModel());
+        }
+        if (product.getId() != null) {
             productDTO.setId(product.getId());
         }
         if (product.getDescription() != null) {
             productDTO.setDescription(product.getDescription());
         }
-//        if (product.getPrice() != null) {
-//            productDTO.setPrice(product.getPrice());
-//        }
+        if (product.getPrice() != null) {
+            productDTO.setPrice(product.getPrice());
+        }
         if (product.getBrand() != null) {
             productDTO.setBrand(product.getBrand());
         }
@@ -62,21 +66,26 @@ public class ProductService {
         if (productDTO.getId() != null) {
             product.setId(productDTO.getId());
         }
-        if (productDTO.getName() != null) {
-            product.setName(productDTO.getName());
+        if (productDTO.getCategory() != null) {
+            product.setCategory(productDTO.getCategory());
         } else {
-            throw new BusinessLogicException("Nome do produto não informado.");
+            throw new BusinessLogicException("Informe ao menos uma categoria do produto.");
+        }
+        if (productDTO.getModel() != null) {
+            product.setModel(productDTO.getModel());
+        } else {
+            throw new BusinessLogicException("Modelo do produto não informado.");
         }
         if (productDTO.getDescription() != null) {
             product.setDescription(productDTO.getDescription());
         } else {
             throw new BusinessLogicException("Descrição do produto não informada.");
         }
-//        if (productDTO.getPrice() != null) {
-//            product.setPrice(product.getPrice());
-//        } else {
-//            throw new BusinessLogicException("Preço do produto não informado.");
-//        }
+        if (productDTO.getPrice() != null) {
+            product.setPrice(productDTO.getPrice());
+        } else {
+            throw new BusinessLogicException("Preço do produto não informado.");
+        }
         if (productDTO.getBrand() != null) {
             product.setBrand(productDTO.getBrand());
         } else {
