@@ -18,4 +18,5 @@ public class ProductDTO {
     private String description;
     private String brand;
     private String size;
+    private Integer quantity;
 }

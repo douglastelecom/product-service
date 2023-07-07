@@ -17,7 +17,6 @@ public class Product {
     private String id;
     private List<String> category;
     private String model;
-    private BigDecimal price;
     private String description;
     private String brand;
     private String size;
