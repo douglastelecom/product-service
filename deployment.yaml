@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+#A única coisa que muda em relação ao replicaset é o Kind e o name
+kind: Deployment
+metadata:
+  name: rabbitmq-deployment
+spec:
+  #quantidade de réplicas
+  replicas: 10
+  selector:
+    matchLabels:
+      app: rabbitmq
+  template:
+    #a partir daqui ele só repete o pod
+    metadata:
+      labels:
+        app: rabbitmq
+    spec:
+      containers:
+        - name: rabbitmq
+          image: rabbitmq:3-management-alpine
+          env:
+            - name: RABBITMQ_DEFAULT_USER
+              value: "tre"
+            - name: RABBITMQ_DEFAULT_PASS
+              value: "123456"
+          ports:
+            - containerPort: 5672
+            - containerPort: 15672
