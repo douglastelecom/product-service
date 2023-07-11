@@ -6,7 +6,6 @@ import com.example.productservice.exception.BusinessLogicException;
 import lombok.RequiredArgsConstructor;
 import com.example.productservice.model.Product;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.example.productservice.repository.ProductRepository;
 
@@ -22,20 +21,24 @@ public class ProductService {
     private final ProductRepository productRepository;
 
     public ProductDTO saveProduct(ProductDTO productDTO) {
-
         ProductDTO productDTOCreated = createProductDTO(productRepository.save(this.createProduct(productDTO)));
         productDTOCreated.setPrice(productDTO.getPrice());
         productDTOCreated.setQuantity(productDTO.getQuantity());
-        rabbitTemplate.convertAndSend("filaProductInventario",createProductQuantityPriceDTO(productDTOCreated));
+        rabbitTemplate.convertAndSend("product-inventory-save",createProductQuantityPriceDTO(productDTOCreated));
         return productDTOCreated;
     }
 
     public List<ProductDTO> getAllProducts() {
-        //solicita o preço para o inventário
-        //setar o preço de todos os produtos no DTO antes de retornar ao cliente
         List<ProductDTO> productDTOList = new ArrayList<>();
+        List<ProductQuantityPriceDTO> listProductQuantityPriceDTO = (List<ProductQuantityPriceDTO>) rabbitTemplate.convertSendAndReceive("product-inventory-getall", "getall");
         for (Product product : productRepository.findAll()) {
-            productDTOList.add(createProductDTO(product));
+            ProductDTO productDTO = createProductDTO(product);
+            for(ProductQuantityPriceDTO productQuantityPriceDTO : listProductQuantityPriceDTO){
+                if(productDTO.getUuid().equals(productQuantityPriceDTO.getUuid())){
+                    createProductDTOFromProductQuantityPriceDTO(productDTO,productQuantityPriceDTO);
+                }
+            }
+            productDTOList.add(productDTO);
         }
         return productDTOList;
     }
@@ -52,8 +55,8 @@ public class ProductService {
     
     public ProductQuantityPriceDTO createProductQuantityPriceDTO(ProductDTO productDTO){
         ProductQuantityPriceDTO productQuantityPriceDTO = new ProductQuantityPriceDTO();
-        if (productDTO.getId() != null) {
-            productQuantityPriceDTO.setId(productDTO.getId());
+        if (productDTO.getUuid() != null) {
+            productQuantityPriceDTO.setUuid(productDTO.getUuid());
         }
         if (productDTO.getQuantity() != null) {
             productQuantityPriceDTO.setQuantity(productDTO.getQuantity());
@@ -77,7 +80,7 @@ public class ProductService {
             productDTO.setModel(product.getModel());
         }
         if (product.getId() != null) {
-            productDTO.setId(product.getId());
+            productDTO.setUuid(product.getId());
         }
         if (product.getDescription() != null) {
             productDTO.setDescription(product.getDescription());
@@ -94,8 +97,8 @@ public class ProductService {
     public Product createProduct(ProductDTO productDTO) {
         Product product = new Product();
 
-        if (productDTO.getId() != null) {
-            product.setId(productDTO.getId());
+        if (productDTO.getUuid() != null) {
+            product.setId(productDTO.getUuid());
         }
         if (productDTO.getCategory() != null) {
             product.setCategory(productDTO.getCategory());

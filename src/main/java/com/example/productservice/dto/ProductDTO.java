@@ -11,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductDTO {
-    private String id;
+    private String uuid;
     private List<String> category;
     private String model;
     private BigDecimal price;

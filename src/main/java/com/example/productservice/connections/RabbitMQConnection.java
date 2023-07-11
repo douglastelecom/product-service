@@ -21,19 +21,21 @@ public class RabbitMQConnection {
     private DirectExchange createExchange(String nomeExchange){
         return new DirectExchange(nomeExchange);
     }
-    private Binding createBinding(Queue queue, DirectExchange directExchange){
-        return new Binding(queue.getName(), Binding.DestinationType.QUEUE, directExchange.getName(), queue.getName(), null);
+    private Binding createBinding(Queue queue, DirectExchange directExchange, String routingKey){
+        return new Binding(queue.getName(), Binding.DestinationType.QUEUE, directExchange.getName(), routingKey, null);
     }
 
     @PostConstruct
     private void criarFilaProductsInventario(){
-        configRabbit("filaProductInventario", "amq.direct");
+
+        configRabbit("product-inventory-save", "amq.direct","product-inventory-save");
+        configRabbit("product-inventory-getall", "amq.direct","product-inventory-getall");
     }
 
-    private void configRabbit(String queueName, String exchangeName){
+    private void configRabbit(String queueName, String exchangeName, String routingKey){
         Queue queue = createQueue(queueName);
         DirectExchange directExchange = createExchange(exchangeName);
-        Binding binding = createBinding(queue, directExchange);
+        Binding binding = createBinding(queue, directExchange, routingKey);
         amqpAdmin.declareQueue(queue);
         amqpAdmin.declareExchange(directExchange);
         amqpAdmin.declareBinding(binding);
