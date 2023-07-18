@@ -23,20 +23,13 @@ spec:
               value: "tre"
             - name: RABBITMQ_DEFAULT_PASS
               value: "123456"
-          volumeMounts:
-            - name: volumelib
-              mountPath: /var/lib/rabbitmq/
-            - name: volumelog
-              mountPath: /var/log/rabbitmq/
           ports:
             - containerPort: 5672
             - containerPort: 15672
+          volumeMounts:
+            - name: rabbitmq-data
+              mountPath: /var/lib/rabbitmq
       volumes:
-        - name: volumelib
-          gcePersistentDisk:
-            pdName: pvc-rabbit
-            fsType: ext4
-        - name: volumelog
-          gcePersistentDisk:
-            pdName: pvc-rabbit
-            fsType: ext4
+        - name: rabbitmq-data
+          persistentVolumeClaim:
+            claimName: rabbitmq-pvc

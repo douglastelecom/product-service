@@ -22,9 +22,9 @@ spec:
               mountPath: /data/db
           env:
             - name: MONGO_INITDB_ROOT_USERNAME
-              value: admin
+              value: tre
             - name: MONGO_INITDB_ROOT_PASSWORD
-              value: password
+              value: "123456"
       volumes:
         - name: mongodb-data
           persistentVolumeClaim:

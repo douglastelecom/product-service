@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+#A única coisa que muda em relação ao replicaset é o Kind e o name
+kind: Deployment
+metadata:
+  name: product
+spec:
+  #quantidade de réplicas
+  replicas: 1
+  selector:
+    matchLabels:
+      app: product
+  template:
+    #a partir daqui ele só repete o pod
+    metadata:
+      labels:
+        app: product
+    spec:
+      containers:
+        - name: product
+          image: douglastelecom/apigateway-dockerfile
+          ports:
+            - containerPort: 8080

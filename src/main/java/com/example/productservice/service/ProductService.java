@@ -31,14 +31,20 @@ public class ProductService {
     public List<ProductDTO> getAllProducts() {
         List<ProductDTO> productDTOList = new ArrayList<>();
         List<ProductQuantityPriceDTO> listProductQuantityPriceDTO = (List<ProductQuantityPriceDTO>) rabbitTemplate.convertSendAndReceive("product-inventory-getall", "getall");
-        for (Product product : productRepository.findAll()) {
-            ProductDTO productDTO = createProductDTO(product);
-            for(ProductQuantityPriceDTO productQuantityPriceDTO : listProductQuantityPriceDTO){
-                if(productDTO.getUuid().equals(productQuantityPriceDTO.getUuid())){
-                    createProductDTOFromProductQuantityPriceDTO(productDTO,productQuantityPriceDTO);
+        List<Product> listProduct = productRepository.findAll();
+        if((listProductQuantityPriceDTO != null) && (listProduct != null)){
+            for (Product product : listProduct) {
+                ProductDTO productDTO = createProductDTO(product);
+                for(ProductQuantityPriceDTO productQuantityPriceDTO : listProductQuantityPriceDTO){
+                    if(productDTO.getUuid().equals(productQuantityPriceDTO.getUuid())){
+                        createProductDTOFromProductQuantityPriceDTO(productDTO,productQuantityPriceDTO);
+                    }
                 }
+                productDTOList.add(productDTO);
             }
-            productDTOList.add(productDTO);
+        }
+        else{
+            throw new BusinessLogicException("Não há produtos disponíveis");
         }
         return productDTOList;
     }
