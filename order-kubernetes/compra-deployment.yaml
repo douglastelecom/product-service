@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: servico-compra-rabbit
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: servico-compra-rabbit
+  template:
+    metadata:
+      name: servico-compra-rabbit
+      labels:
+        app: servico-compra-rabbit
+    spec:
+      containers:
+        - name: servico-compra-rabbit
+          image: noefernandes/servico-compra-rabbit
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080

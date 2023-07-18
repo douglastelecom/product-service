@@ -17,6 +17,6 @@ spec:
     spec:
       containers:
         - name: product
-          image: douglastelecom/apigateway-dockerfile
+          image: douglastelecom/product
           ports:
             - containerPort: 8080
