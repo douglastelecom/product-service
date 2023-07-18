@@ -44,10 +44,9 @@ public class ProductService {
                 ProductDTO productDTO = createProductDTO(product);
                 for(ProductQuantityPriceDTO productQuantityPriceDTO : listProductQuantityPriceDTO){
                     if(productDTO.getUuid().equals(productQuantityPriceDTO.getUuid())){
-                        createProductDTOFromProductQuantityPriceDTO(productDTO,productQuantityPriceDTO);
+                        productDTOList.add(createProductDTOFromProductQuantityPriceDTO(productDTO,productQuantityPriceDTO));
                     }
                 }
-                productDTOList.add(productDTO);
             }
         }
         else{
@@ -57,11 +56,11 @@ public class ProductService {
     }
 
     public ProductDTO createProductDTOFromProductQuantityPriceDTO(ProductDTO productDTO, ProductQuantityPriceDTO productQuantityPriceDTO){
-        if (productDTO.getQuantity() != null) {
-            productDTO.setQuantity(productDTO.getQuantity());
+        if (productQuantityPriceDTO.getQuantity() != null) {
+            productDTO.setQuantity(productQuantityPriceDTO.getQuantity());
         }
-        if (productDTO.getPrice() != null) {
-            productDTO.setPrice(productDTO.getPrice());
+        if (productQuantityPriceDTO.getPrice() != null) {
+            productDTO.setPrice(productQuantityPriceDTO.getPrice());
         }
         return productDTO;
     }
