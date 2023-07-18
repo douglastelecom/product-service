@@ -24,6 +24,12 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK).body(productService.getAllProducts());
     }
 
+    @GetMapping("/health")
+    public ResponseEntity<String> healthProducts() throws JsonProcessingException {
+        return ResponseEntity.status(HttpStatus.OK).body("O serviço está funcionando.");
+    }
+
+
     @PostMapping("/products")
     public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductDTO productDTO) throws JsonProcessingException {
         return ResponseEntity.status(HttpStatus.CREATED).body(productService.saveProduct(productDTO));
