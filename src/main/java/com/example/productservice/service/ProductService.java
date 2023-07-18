@@ -3,6 +3,9 @@ package com.example.productservice.service;
 import com.example.productservice.dto.ProductDTO;
 import com.example.productservice.dto.ProductQuantityPriceDTO;
 import com.example.productservice.exception.BusinessLogicException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import com.example.productservice.model.Product;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -20,19 +23,23 @@ public class ProductService {
 
     private final ProductRepository productRepository;
 
-    public ProductDTO saveProduct(ProductDTO productDTO) {
+    private final ObjectMapper objectMapper;
+
+    public ProductDTO saveProduct(ProductDTO productDTO) throws JsonProcessingException {
         ProductDTO productDTOCreated = createProductDTO(productRepository.save(this.createProduct(productDTO)));
         productDTOCreated.setPrice(productDTO.getPrice());
         productDTOCreated.setQuantity(productDTO.getQuantity());
-        rabbitTemplate.convertAndSend("product-inventory-save",createProductQuantityPriceDTO(productDTOCreated));
+        ProductQuantityPriceDTO quantityPriceDTO = createProductQuantityPriceDTO(productDTOCreated);
+        rabbitTemplate.convertAndSend("product-inventory-save",objectMapper.writeValueAsString(quantityPriceDTO));
         return productDTOCreated;
     }
 
-    public List<ProductDTO> getAllProducts() {
+    public List<ProductDTO> getAllProducts() throws JsonProcessingException {
         List<ProductDTO> productDTOList = new ArrayList<>();
-        List<ProductQuantityPriceDTO> listProductQuantityPriceDTO = (List<ProductQuantityPriceDTO>) rabbitTemplate.convertSendAndReceive("product-inventory-getall", "getall");
+        String stringProductQuantityPriceDTO = (String) rabbitTemplate.convertSendAndReceive("product-inventory-getall", "getall");
+        List<ProductQuantityPriceDTO> listProductQuantityPriceDTO = objectMapper.readValue(stringProductQuantityPriceDTO, new TypeReference<List<ProductQuantityPriceDTO>>(){});
         List<Product> listProduct = productRepository.findAll();
-        if((listProductQuantityPriceDTO != null) && (listProduct != null)){
+        if((stringProductQuantityPriceDTO != null) && (listProduct != null)){
             for (Product product : listProduct) {
                 ProductDTO productDTO = createProductDTO(product);
                 for(ProductQuantityPriceDTO productQuantityPriceDTO : listProductQuantityPriceDTO){
