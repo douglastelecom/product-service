@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+#A única coisa que muda em relação ao replicaset é o Kind e o name
+kind: Deployment
+metadata:
+  name: inventory
+spec:
+  #quantidade de réplicas
+  replicas: 1
+  selector:
+    matchLabels:
+      app: inventory
+  template:
+    #a partir daqui ele só repete o pod
+    metadata:
+      labels:
+        app: inventory
+    spec:
+      containers:
+        - name: inventory
+          image: juliadantas/inventory-service
+          ports:
+            - containerPort: 8082
